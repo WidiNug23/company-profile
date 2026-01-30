@@ -23,6 +23,7 @@
     padding: 26px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
 }
 
 .stat-card:hover, .action-card:hover {
@@ -138,15 +139,43 @@ table tr:hover {
         <span>Total Trust Booster</span>
         <h3>{{ $trustCount }}</h3>
     </div>
+
+    <div class="stat-card">
+        <span>Total Projects</span>
+        <h3>{{ $projectCount }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Total Project Stories</span>
+        <h3>{{ $projectStoryCount }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Total Clients</span>
+        <h3>{{ $clientCount }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Total Partners</span>
+        <h3>{{ $partnerCount }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Total Certificates</span>
+        <h3>{{ $certificateCount }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Total Kalender Konten</span>
+        <h3>{{ $calendarCount }}</h3>
+    </div>
 </section>
 
-<!-- Bagian visitor -->
 <section class="visitor-stats">
     <div class="stat-card">
         <span>Total Visitor</span>
         <h3>{{ $totalVisits }}</h3>
     </div>
-
     <div class="stat-card">
         <span>Unique Visitor</span>
         <h3>{{ $uniqueVisitors }}</h3>
@@ -180,19 +209,49 @@ table tr:hover {
 
 <!-- ACTION -->
 <section class="actions">
+    <a href="{{ route('company-profile.index') }}" class="action-card">
+        <h4>Company Profile</h4>
+        <p>Kelola informasi perusahaan.</p>
+    </a>
+
     <a href="{{ route('services.index') }}" class="action-card">
         <h4>Kelola Services</h4>
-        <p>Tambah, ubah, dan hapus layanan.</p>
+        <p>Kelola layanan perusahaan.</p>
+    </a>
+
+    <a href="{{ route('projects.index') }}" class="action-card">
+        <h4>Kelola Projects</h4>
+        <p>Kelola proyek yang sedang dan telah berjalan.</p>
+    </a>
+
+    <a href="{{ route('project-stories.index') }}" class="action-card">
+        <h4>Kelola Project Stories</h4>
+        <p>Kelola cerita proyek dan studi kasus.</p>
+    </a>
+
+    <a href="{{ route('clients.index') }}" class="action-card">
+        <h4>Kelola Clients</h4>
+        <p>Kelola daftar klien perusahaan.</p>
+    </a>
+
+    <a href="{{ route('partners.index') }}" class="action-card">
+        <h4>Kelola Partners</h4>
+        <p>Kelola mitra kerja dan kolaborasi.</p>
+    </a>
+
+    <a href="{{ route('certifications.index') }}" class="action-card">
+        <h4>Kelola Sertifikat</h4>
+        <p>Kelola sertifikat perusahaan.</p>
     </a>
 
     <a href="{{ route('news.index') }}" class="action-card">
         <h4>Kelola News</h4>
-        <p>Manajemen berita perusahaan.</p>
+        <p>Kelola berita perusahaan.</p>
     </a>
 
-    <a href="{{ route('trust-boosters.index') }}" class="action-card">
-        <h4>Kelola Trust Booster</h4>
-        <p>Kelola keunggulan & kepercayaan.</p>
+    <a href="{{ route('calendar.index') }}" class="action-card">
+        <h4>Kelola Kalender Konten</h4>
+        <p>Kelola jadwal dan konten publikasi.</p>
     </a>
 </section>
 

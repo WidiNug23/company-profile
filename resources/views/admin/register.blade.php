@@ -46,7 +46,8 @@
 
     .register-left input[type="text"],
     .register-left input[type="email"],
-    .register-left input[type="password"] {
+    .register-left input[type="password"],
+    .select-wrapper select {
         width: 100%;
         padding: 12px 16px;
         margin-bottom: 20px;
@@ -56,46 +57,41 @@
         transition: border 0.3s, box-shadow 0.3s;
     }
 
-    .register-left input:focus {
+    .register-left input:focus,
+    .select-wrapper select:focus {
         border-color: #1a73e8;
         box-shadow: 0 0 6px rgba(26,115,232,0.4);
         outline: none;
+        background-color: #f9fbff;
     }
 
-/* PASSWORD WRAPPER */
-.password-wrapper {
-    position: relative;
-    width: 100%;
-    margin-bottom: 20px;
-}
+    /* PASSWORD WRAPPER */
+    .password-wrapper {
+        position: relative;
+        width: 100%;
+        margin-bottom: 20px;
+    }
 
-.password-wrapper input {
-    width: 100%;
-    padding: 12px 40px 12px 16px; /* padding kanan untuk icon */
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
-    line-height: 1.4;
-}
+    .password-wrapper input {
+        width: 100%;
+        padding: 12px 40px 12px 16px; /* padding kanan untuk icon */
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        line-height: 1.4;
+    }
 
-.password-wrapper input:focus {
-    border-color: #1a73e8;
-    box-shadow: 0 0 6px rgba(26,115,232,0.4);
-    outline: none;
-}
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        cursor: pointer;
+        color: #888;
+    }
 
-/* TOGGLE PASSWORD ICON */
-.toggle-password {
-    position: absolute;
-    right: 12px;
-    top: 12px; /* ubah dari 50% menjadi 12px untuk naik */
-    cursor: pointer;
-    color: #888;
-}
-
-.toggle-password:hover {
-    color: #1a73e8;
-}
+    .toggle-password:hover {
+        color: #1a73e8;
+    }
 
     .register-left button {
         width: 100%;
@@ -125,6 +121,23 @@
         background-size: cover;
     }
 
+    /* STYLING ROLE DROPDOWN */
+    .select-wrapper {
+        width: 100%;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .select-wrapper::after {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #888;
+        font-size: 12px;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
         .register-container { flex-direction: column; min-height: auto; }
@@ -133,7 +146,8 @@
         .register-left h2 { font-size: 28px; margin-bottom: 20px; }
         .register-left input[type="text"],
         .register-left input[type="email"],
-        .register-left input[type="password"] { font-size: 14px; padding: 10px 14px; }
+        .register-left input[type="password"],
+        .select-wrapper select { font-size: 14px; padding: 10px 14px; }
         .register-left button { font-size: 14px; padding: 12px 0; }
     }
 </style>
@@ -158,15 +172,18 @@
             @csrf
             <input type="text" name="name" placeholder="Nama Lengkap" required>
             <input type="email" name="email" placeholder="Email" required>
-            <select name="role_id" required>
-    <option value="">-- Pilih Role --</option>
-    @foreach($roles as $role)
-        <option value="{{ $role->role_id }}">
-            {{ ucfirst($role->role_name) }}
-        </option>
-    @endforeach
-</select>
 
+            <!-- ROLE DROPDOWN -->
+            <div class="select-wrapper">
+                <select name="role_id" required>
+                    <option value="">-- Pilih Role --</option>
+                    @foreach($roles as $role)
+                        <option value="{{ $role->role_id }}">
+                            {{ ucfirst($role->role_name) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
             <!-- PASSWORD -->
             <div class="password-wrapper">
@@ -180,7 +197,7 @@
                 <span class="toggle-password" data-feather="eye" onclick="togglePassword('password_confirmation', this)"></span>
             </div>
 
-            <button type="submit">Daftar Admin</button>
+            <button type="submit">Daftar</button>
         </form>
     </div>
 
