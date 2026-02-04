@@ -1,187 +1,181 @@
 @extends('layouts.front')
 
-@section('title', 'Berita')
+@section('title', 'Berita & Artikel')
 
 @section('content')
-
 <style>
-:root {
-    --primary-color: #1a73e8;
-    --accent-color: #0f4c81;
-    --card-bg: #fff;
-    --text-color: #111827;
-    --text-color-secondary: #6b7280;
-    --shadow: rgba(0,0,0,0.08);
-}
-
-body.dark {
-    --primary-color: #93c5fd;
-    --accent-color: #60a5fa;
-    --card-bg: #1f2937;
-    --text-color: #f3f4f6;
-    --text-color-secondary: #d1d5db;
-    --shadow: rgba(0,0,0,0.3);
-}
-
-/* PAGE TITLE */
-.page-title {
-    text-align: center;
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--primary-color);
-    margin: 50px 0 40px 0;
-    letter-spacing: -0.5px;
-}
-
-/* NEWS GRID */
-.news-container {
-    max-width: 1200px;
-    margin: 0 auto 50px auto;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 28px;
-}
-
-/* CARD LINK */
-.news-card-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-/* HOVER EFFECT */
-.news-card-link:hover .news-card {
-    transform: translateY(-6px);
-    box-shadow: 0 15px 35px var(--shadow);
-}
-
-/* NEWS CARD */
-.news-card {
-    background: var(--card-bg);
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 6px 18px var(--shadow);
-    transition: transform 0.3s, box-shadow 0.3s, background 0.3s, color 0.3s;
-    display: flex;
-    flex-direction: column;
-    color: var(--text-color);
-}
-
-/* IMAGE */
-.news-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    transition: filter 0.3s;
-}
-
-body.dark .news-card img {
-    filter: brightness(0.85);
-}
-
-/* CARD CONTENT */
-.news-card .card-content {
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.news-card h3 {
-    font-size: 20px;
-    margin: 0 0 10px 0;
-    color: var(--text-color);
-    line-height: 1.3;
-    transition: color 0.3s;
-}
-
-.news-card h3 a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.news-card h3 a:hover {
-    color: var(--accent-color);
-}
-
-.news-card p {
-    font-size: 15px;
-    color: var(--text-color-secondary);
-    flex: 1;
-    margin-bottom: 12px;
-    line-height: 1.6;
-}
-
-/* SMALL TEXT */
-.news-card small {
-    color: var(--text-color-secondary);
-    font-size: 13px;
-}
-
-/* PAGINATION */
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin: 40px 0 60px 0;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.pagination a,
-.pagination span {
-    padding: 8px 14px;
-    border-radius: 6px;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.pagination a:hover {
-    background: var(--primary-color);
-    color: #fff;
-}
-
-.pagination .active span {
-    background: var(--primary-color);
-    color: #fff;
-    border-color: var(--primary-color);
-}
-
-/* RESPONSIVE */
-@media(max-width: 768px) {
-    .news-container {
-        grid-template-columns: 1fr;
+    :root {
+        --primary: var(--accent-color, #2563eb);
     }
 
-    .news-card img {
-        height: 200px;
+    /* Background Fixed dengan Overlay Adaptif */
+    .news-bg-fixed {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url('{{ asset("storage/news-bg.jpg") }}');
+        background-size: cover;
+        background-position: center;
+        z-index: -1;
     }
-}
+
+    /* Overlay yang berubah berdasarkan tema */
+    .news-bg-fixed::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        transition: background 0.4s ease;
+    }
+    [data-theme="dark"] .news-bg-fixed::after { background: rgba(10, 15, 28, 0.92); }
+    [data-theme="light"] .news-bg-fixed::after { background: rgba(255, 255, 255, 0.88); }
+
+    .news-wrapper {
+        padding: 80px 0;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    .header-section {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .header-section h1 {
+        font-size: clamp(32px, 5vw, 48px);
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 15px;
+    }
+
+    .header-section p {
+        color: var(--text-muted);
+        font-size: 18px;
+    }
+
+    .news-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Card Adaptif */
+    .news-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid var(--nav-border);
+        border-radius: 24px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .news-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--primary);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    .image-container {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+    .image-container img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 15px; left: 15px;
+        background: var(--primary);
+        color: #ffffff;
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        z-index: 2;
+    }
+
+    .card-body {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .card-body h3 {
+        color: var(--text-main);
+        font-size: 20px;
+        line-height: 1.4;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .card-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: auto;
+        padding-top: 20px;
+        border-top: 1px solid var(--nav-border);
+        color: var(--text-muted);
+        font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+        .news-grid { grid-template-columns: 1fr; }
+    }
 </style>
 
-<div class="page-title">Berita Terbaru</div>
+<div class="news-wrapper">
+    <div class="news-bg-fixed"></div>
+    
+    <div class="header-section">
+        <h1>Warta & Insight</h1>
+        <p>Update terbaru mengenai inovasi, proyek, dan berita industri kami.</p>
+    </div>
 
-<div class="news-container">
-    @forelse ($news as $item)
-        <a href="{{ route('news.front.show', $item->id_berita) }}" class="news-card-link">
-            <div class="news-card">
-                @if ($item->image)
-                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->judul }}">
-                @endif
+    <div class="news-grid">
+        @forelse ($news as $item)
+            <a href="{{ route('news.front.show', $item->id_berita) }}" style="text-decoration: none;">
+                <article class="news-card">
+                    <div class="image-container">
+                        <span class="category-badge">{{ $item->jenis_berita ?? 'Umum' }}</span>
+                        @if ($item->image)
+                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->judul }}">
+                        @else
+                            <div style="height:100%; background:var(--glass-bg); display:flex; align-items:center; justify-content:center; color:var(--text-muted);">No Image</div>
+                        @endif
+                    </div>
 
-                <div class="card-content">
-                    <h3>{{ $item->judul }}</h3>
-                    <!-- <p>{{ \Illuminate\Support\Str::limit(strip_tags($item->isi), 120) }}</p> -->
-                    <small>Dipublikasikan: {{ $item->tanggal_publikasi->format('d M Y') }}</small>
-                </div>
+                    <div class="card-body">
+                        <h3>{{ Str::limit($item->judul, 65) }}</h3>
+                        
+                        <div class="card-meta">
+                            <span style="display:flex; align-items:center; gap:5px;">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                {{ $item->author }}
+                            </span>
+                            <span>•</span>
+                            <span>{{ $item->tanggal_publikasi->format('d M Y') }}</span>
+                        </div>
+                    </div>
+                </article>
+            </a>
+        @empty
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 100px 0;">
+                <p>Belum ada berita yang diterbitkan.</p>
             </div>
-        </a>
-    @empty
-        <p style="text-align:center; color:#9ca3af;">Belum ada berita terbaru.</p>
-    @endforelse
+        @endforelse
+    </div>
 </div>
-
 @endsection

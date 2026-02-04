@@ -1,260 +1,309 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Company Profile')</title>
+    <title>@yield('title', 'Solusi Energi Berkelanjutan')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         :root {
-            --primary-color: #1a73e8;
-            --primary-gradient: linear-gradient(90deg, #1a73e8, #0f4c81);
-            --secondary-color: #f5f7fa;
-            --accent-color: #0f4c81;
-            --text-color: #333;
-            --shadow: rgba(0,0,0,0.1);
+            --bg-body: #f8fafc;
+            --bg-nav: #ffffff; 
+            /* Menyamakan warna background topbar dengan navbar */
+            --bg-topbar: #ffffff; 
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #3b82f6;
+            --nav-border: rgba(0, 0, 0, 0.05);
+            --footer-bg: #0f172a;
+            --card-bg: #ffffff;
+            --mobile-menu-bg: #ffffff; 
         }
 
-        body.dark {
-            --primary-color: #0f4c81;
-            --primary-gradient: linear-gradient(90deg, #0f4c81, #1a73e8);
-            --secondary-color: #1e1e1e;
-            --accent-color: #1a73e8;
-            --text-color: #f4f4f4;
-            --shadow: rgba(0,0,0,0.4);
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-nav: #0f172a; 
+            --bg-topbar: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #3b82f6;
+            --nav-border: rgba(255, 255, 255, 0.08);
+            --footer-bg: #020617;
+            --card-bg: #1e293b;
+            --mobile-menu-bg: #0f172a; 
         }
 
-        * { box-sizing: border-box; transition: all 0.3s ease; }
+        * { 
+            box-sizing: border-box; 
+            transition: background 0.3s ease, color 0.3s ease; 
+        }
 
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background: var(--secondary-color);
-            color: var(--text-color);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
             line-height: 1.6;
         }
 
-        /* ===== HEADER ===== */
+        /* ================= HEADER & NAV ================= */
         header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 15px 40px;
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            z-index: 9999;
+            background-color: var(--bg-nav);
+            border-bottom: 1px solid var(--nav-border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Top Bar Section */
+        .top-bar {
+            background-color: var(--bg-topbar);
+            padding: 10px 40px 0px 40px; /* Padding bawah kecil karena akan menyambung ke menu */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .top-socials {
+            display: flex;
+            gap: 18px;
+        }
+
+        .top-socials a {
+            color: var(--text-muted);
+            font-size: 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .top-socials a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Main Navbar Section */
+        .navbar-container {
+            padding: 0 40px;
+        }
+
+        .main-nav {
+            max-width: 1300px;
+            margin: 0 auto;
+            height: 70px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px var(--shadow);
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            transition: top 0.3s, padding 0.3s;
         }
 
-        header h1 {
-            font-weight: 700;
-            font-size: 1.6rem; /* compact */
-            margin: 0;
-        }
-
-        nav {
+        .brand {
             display: flex;
             align-items: center;
-        }
-
-        nav a {
-            color: white;
-            margin-left: 30px;
+            gap: 12px;
             text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            padding: 5px 0;
+            color: var(--text-main);
+            font-weight: 800;
+            font-size: 1.4rem;
+            z-index: 10001;
         }
 
-        nav a::after {
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 15px;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            opacity: 1;
+            color: var(--accent-color);
+        }
+
+        /* Ikon Sosial Media di Mobile Menu */
+        .mobile-only {
+            display: none;
+            gap: 20px;
+            margin-top: 30px;
+            border-top: 1px solid var(--nav-border);
+            padding-top: 20px;
+        }
+
+        .mobile-only a {
+            color: var(--text-main);
+            font-size: 20px;
+            opacity: 0.8;
+        }
+
+        /* ================= BURGER ================= */
+        .burger { 
+            display: none; 
+            cursor: pointer; 
+            flex-direction: column; 
+            gap: 6px; 
+            z-index: 10001;
+        }
+        
+        .burger span { 
+            width: 25px; 
+            height: 2px; 
+            background: var(--text-main); 
+            transition: 0.3s; 
+        }
+
+        .burger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .burger.active span:nth-child(2) { opacity: 0; }
+        .burger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: var(--footer-bg);
+            color: #fff;
+            padding: 80px 0 40px;
+            margin-top: 50px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            padding: 0 40px;
+        }
+
+        .footer-about img { height: 45px; margin-bottom: 20px; filter: brightness(0) invert(1); }
+        .footer-about p { color: #94a3b8; font-size: 15px; }
+
+        .footer-section h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .footer-section h4::after {
             content: '';
             position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background: white;
-            transition: width 0.3s ease;
-            border-radius: 1px;
+            left: 0; bottom: -8px;
+            width: 30px; height: 2px;
+            background: var(--accent-color);
         }
 
-        nav a:hover::after { width: 100%; }
-        nav a.active { font-weight: 600; }
+        .footer-section ul { list-style: none; padding: 0; }
+        .footer-section ul li { margin-bottom: 12px; }
+        .footer-section ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; }
+        .footer-section ul li a:hover { color: #fff; padding-left: 5px; }
 
-        /* ===== BURGER MENU ===== */
-        .burger {
-            display: none;
-            width: 28px;
-            height: 22px;
-            position: relative;
-            cursor: pointer;
-            flex-direction: column;
-            justify-content: space-between;
-            z-index: 1001;
+        .social-group { display: flex; gap: 12px; margin-top: 20px; }
+        .social-group a {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; color: #fff; text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .burger span {
-            display: block;
-            height: 3px;
-            width: 100%;
-            background: white;
-            border-radius: 3px;
-            transition: all 0.4s ease;
-        }
-
-        .burger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-
-        .burger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .burger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
-
-        .mobile-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background: var(--primary-gradient);
-            position: absolute;
-            top: 60px; /* lebih menempel ke header */
-            right: 0;
-            width: 100%;
-            padding: 0 20px;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.4s ease, padding 0.4s ease;
-            z-index: 1000;
-        }
-
-        .mobile-nav.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-            padding: 20px;
-        }
-
-        .mobile-nav a {
-            color: white;
-            font-size: 18px;
-            font-weight: 500;
-            padding: 10px 0;
-            text-decoration: none;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .mobile-nav a:last-child {
-            border-bottom: none;
-        }
-
-        /* ===== CONTENT ===== */
-        main {
+        .footer-bottom {
             max-width: 1200px;
-            margin: 90px auto 40px auto;
-            padding: 0 20px;
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 50px 40px 30px 40px;
+            margin: 60px auto 0;
+            padding: 30px 40px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 40px;
-            border-top: 4px solid rgba(255,255,255,0.2);
+            align-items: center;
+            color: #64748b; font-size: 14px;
         }
 
-        footer .footer-section { min-width: 200px; }
-        footer h4 { margin-bottom: 15px; font-size: 18px; font-weight: 600; }
-        footer p, footer a { font-size: 14px; color: white; text-decoration: none; margin-bottom: 8px; display: block; }
-        footer a:hover { text-decoration: underline; }
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 992px) {
+            .top-bar { display: none; } /* Desktop topbar sembunyi di mobile */
+            .navbar-container { padding: 0 20px; }
+            .burger { display: flex; }
 
-        footer .social-icons a {
-            display: inline-block;
-            width: 36px; height: 36px; line-height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            text-align: center;
-            margin-right: 10px;
-            transition: all 0.3s;
+            .nav-links {
+                position: fixed;
+                top: 0; 
+                right: -100%;
+                width: 100%; 
+                height: 100vh;
+                background-color: var(--mobile-menu-bg);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 25px;
+                transition: 0.4s ease-in-out;
+            }
+
+            .nav-links.active { right: 0; }
+            .nav-links a { font-size: 20px; opacity: 1; }
+            
+            .mobile-only { display: flex; } /* Munculkan sosial media di dalam menu burger */
+            
+            .footer-grid { grid-template-columns: 1fr 1fr; }
         }
 
-        footer .social-icons a:hover {
-            background: white;
-            color: var(--primary-color);
-            transform: translateY(-3px);
+        @media (max-width: 640px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
         }
 
-        footer .copyright {
-            width: 100%;
-            text-align: center;
-            margin-top: 30px;
-            font-size: 13px;
-            color: rgba(255,255,255,0.8);
-        }
-
-        /* Responsive */
-        @media(max-width:768px){
-            nav { display: none; }
-            .burger { display: flex; flex-direction: column; justify-content: space-between; }
-            header { padding: 12px 20px; }
-            header h1 { font-size: 1.3rem; }
-        }
+        main { padding-top: 120px; min-height: 80vh; }
     </style>
 </head>
 <body>
 
-<header id="header">
-    <h1>Company Profile</h1>
-    <div style="display:flex; align-items:center;">
-        <nav id="nav">
-            <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
-            <a href="/company-profile" class="{{ request()->is('company-profile') ? 'active' : '' }}">Company Profile</a>
-            <a href="/services" class="{{ request()->is('services') ? 'active' : '' }}">Services</a>
-            <a href="/proyek-stories" class="{{ request()->is('proyek-stories') ? 'active' : '' }}">Portofolio Proyek</a>
-            <a href="/trust-booster" class="{{ request()->is('trust-booster') ? 'active' : '' }}">Trust Booster</a>
-            <!-- <a href="/calendar" class="{{ request()->is('calendar') ? 'active' : '' }}">Kalender Konten</a> -->
-            <a href="/news" class="{{ request()->is('news') ? 'active' : '' }}">News</a>
-            <a href="/contact" class="{{ request()->is('contact') ? 'active' : '' }}">Contact</a>
-        </nav>
-
-        <div class="burger" id="burger">
-            <span></span>
-            <span></span>
-            <span></span>
+<header id="mainHeader">
+    <div class="top-bar">
+        <div class="top-socials">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
         </div>
     </div>
 
-    <div class="mobile-nav" id="mobileNav">
-        <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
-        <a href="/company-profile" class="{{ request()->is('company-profile') ? 'active' : '' }}">Company Profile</a>
-        <a href="/services" class="{{ request()->is('services') ? 'active' : '' }}">Services</a>
-        <a href="/proyek-stories" class="{{ request()->is('proyek-stories') ? 'active' : '' }}">Portofolio Proyek</a> 
-        <a href="/trust-booster" class="{{ request()->is('trust-booster') ? 'active' : '' }}">Trust Booster</a>
-        <!-- <a href="/calendar" class="{{ request()->is('calendar') ? 'active' : '' }}">Kalender Konten</a> -->
-        <a href="/news" class="{{ request()->is('news') ? 'active' : '' }}">News</a>
-        <a href="/contact" class="{{ request()->is('contact') ? 'active' : '' }}">Contact</a>
+    <div class="navbar-container">
+        <div class="main-nav">
+            <a href="/" class="brand">
+                <img src="/assets/logo.png" alt="Logo" style="height: 40px;">
+                <span>Energy<span style="color:var(--accent-color)">Co</span></span>
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Beranda</a>
+                <a href="/company-profile" class="{{ request()->is('company-profile') ? 'active' : '' }}">Profil</a>
+                <a href="/services" class="{{ request()->is('services') ? 'active' : '' }}">Layanan</a>
+                <a href="/proyek-stories" class="{{ request()->is('proyek-stories') ? 'active' : '' }}">Portofolio</a>
+                <a href="/news" class="{{ request()->is('news') ? 'active' : '' }}">Berita</a>
+                <a href="/contact" class="{{ request()->is('contact') ? 'active' : '' }}">Kontak</a>
+                
+                <button class="theme-toggle" id="themeToggle" style="background:none; border:1px solid var(--nav-border); color:var(--text-main); padding:8px 12px; border-radius:10px; cursor:pointer;">
+                    <i class="fas fa-moon"></i>
+                </button>
+
+                <div class="mobile-only">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </nav>
+
+            <div class="burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
     </div>
 </header>
 
@@ -263,59 +312,83 @@
 </main>
 
 <footer>
-    <div class="footer-section">
-        <h4>Company</h4>
-        <p>123 Jalan Utama, Jakarta</p>
-        <p>Email: info@company.com</p>
-        <p>Tel: +62 812-3456-7890</p>
-    </div>
+    <div class="footer-grid">
+        <div class="footer-about">
+            <img src="/assets/logo.png" alt="Logo">
+            <p>Memimpin revolusi energi berkelanjutan di Indonesia dengan solusi teknologi inovatif dan ramah lingkungan untuk masa depan yang lebih baik.</p>
+            <div class="social-group">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
 
-    <div class="footer-section">
-        <h4>Quick Links</h4>
-        <a href="/">Home</a>
-        <a href="/company-profile">Company Profile</a>
-        <a href="/services">Services</a>
-        <a href="/news">News</a>
-        <a href="/contact">Contact</a>
-    </div>
+        <div class="footer-section">
+            <h4>Navigasi</h4>
+            <ul>
+                <li><a href="/">Beranda</a></li>
+                <li><a href="/company-profile">Tentang Kami</a></li>
+                <li><a href="/services">Layanan Kami</a></li>
+                <li><a href="/proyek-stories">Proyek</a></li>
+            </ul>
+        </div>
 
-    <div class="footer-section">
-        <h4>Follow Us</h4>
-        <div class="social-icons">
-            <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        <div class="footer-section">
+            <h4>Bantuan</h4>
+            <ul>
+                <li><a href="/news">Berita Terbaru</a></li>
+                <li><a href="/contact">Hubungi Kami</a></li>
+                <li><a href="#">Kebijakan Privasi</a></li>
+                <li><a href="#">Syarat & Ketentuan</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Kontak Kami</h4>
+            <p style="margin-bottom: 10px; font-size: 14px; color: #94a3b8;"><i class="fas fa-map-marker-alt" style="color:var(--accent-color); margin-right: 10px;"></i> Gedung Inovasi Lt. 5, Jakarta</p>
+            <p style="margin-bottom: 10px; font-size: 14px; color: #94a3b8;"><i class="fas fa-phone-alt" style="color:var(--accent-color); margin-right: 10px;"></i> +62 21 5550 1234</p>
+            <p style="font-size: 14px; color: #94a3b8;"><i class="fas fa-envelope" style="color:var(--accent-color); margin-right: 10px;"></i> hello@energyco.id</p>
         </div>
     </div>
 
-    <div class="copyright">
-        &copy; {{ date('Y') }} Company Profile. All rights reserved.
+    <div class="footer-bottom">
+        <div>&copy; {{ date('Y') }} EnergyCo. All rights reserved.</div>
     </div>
 </footer>
 
 <script>
-    // Header show/hide on scroll
-    let prevScroll = window.pageYOffset;
-    const header = document.getElementById('header');
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlElement = document.documentElement;
+    const themeIcon = themeToggle.querySelector('i');
 
-    window.onscroll = function() {
-        let currentScroll = window.pageYOffset;
-        if (prevScroll > currentScroll) {
-            header.style.top = "0";
-        } else {
-            header.style.top = "-100px";
-        }
-        prevScroll = currentScroll;
-    }
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    htmlElement.setAttribute('data-theme', savedTheme);
+    themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 
-    // Burger menu toggle dengan animasi smooth
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        htmlElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    });
+
     const burger = document.getElementById('burger');
-    const mobileNav = document.getElementById('mobileNav');
+    const navLinks = document.getElementById('navLinks');
 
     burger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
         burger.classList.toggle('active');
-        mobileNav.classList.toggle('show');
+        document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            burger.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
     });
 </script>
 
