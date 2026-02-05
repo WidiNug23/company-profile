@@ -28,7 +28,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\TrustBoosterController;
-use App\Http\Controllers\AdminRegisterController;
+use App\Http\Controllers\Admin\RegisterController;
 use App\Http\Controllers\Admin\CompanyProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ProjectStoryController;
@@ -36,6 +36,8 @@ use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\CalendarController;
+
+use App\Http\Controllers\SuperAdmin\DataUserController;
 
 use App\Http\Controllers\Pimpinan\MonitoringController;
 use App\Http\Controllers\Pimpinan\AuthPimpinanController;
@@ -72,8 +74,8 @@ Route::prefix('admin')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
     // REGISTER ADMIN (nanti kita ubah)
-    Route::get('/UsersCompanyProfileRegistration', [AdminRegisterController::class, 'showForm'])->name('admin.register');
-    Route::post('/UsersCompanyProfileRegistration', [AdminRegisterController::class, 'register'])->name('admin.register.post');
+    // Route::get('/UsersCompanyProfileRegistration', [AdminRegisterController::class, 'showForm'])->name('admin.register');
+    // Route::post('/UsersCompanyProfileRegistration', [AdminRegisterController::class, 'register'])->name('admin.register.post');
 });
 
 // ADMIN AREA
@@ -126,3 +128,21 @@ Route::middleware(['auth', 'role:pimpinan'])
             ->name('pimpinan.dashboard');
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| SUPER ADMIN ROUTES (Role ID: 99)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('super-admin')->group(function () {
+    Route::get('/login-super-admin-company-profile', [DataUserController::class, 'showLogin'])->name('superadmin.login');
+    Route::post('/login-super-admin-company-profile', [DataUserController::class, 'login'])->name('superadmin.login.post');
+    Route::post('/logout-super-admin-company-profile', [DataUserController::class, 'logout'])->name('superadmin.logout');
+});
+
+// Menggunakan '99' sebagai parameter agar sesuai dengan RoleMiddleware yang baru kita buat
+Route::middleware(['auth', 'role:99'])->prefix('super-admin')->group(function () {
+    Route::get('/dashboard', [DataUserController::class, 'index'])->name('superadmin.dashboard');
+    Route::post('/users', [DataUserController::class, 'store'])->name('superadmin.users.store');
+    Route::delete('/users/{id}', [DataUserController::class, 'destroy'])->name('superadmin.users.destroy');
+});
