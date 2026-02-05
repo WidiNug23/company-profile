@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon; // Tambahkan ini untuk urusan tanggal
 use App\Models\Service;
 use App\Models\News;
 use App\Models\TrustBooster;
@@ -31,6 +32,9 @@ class DashboardController extends Controller
         $calendarCount      = ContentCalendar::count();
 
         // === VISITOR DATA ===
+        // Hitung pengunjung HARI INI berdasarkan kolom created_at
+        $todayVisitors      = VisitorLog::whereDate('created_at', Carbon::today())->count();
+        
         $totalVisits        = VisitorLog::count();
         $uniqueVisitors     = VisitorLog::distinct('ip_address')->count('ip_address');
 
@@ -51,6 +55,7 @@ class DashboardController extends Controller
             'partnerCount',
             'certificateCount',
             'calendarCount',
+            'todayVisitors', // Sekarang variabel ini sudah dikirim!
             'totalVisits',
             'uniqueVisitors',
             'topPages'

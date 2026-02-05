@@ -4,190 +4,136 @@
 @section('page-title', 'Company Profile')
 
 @section('content')
-<div style="padding:20px;">
+<div class="container-fluid">
 
-    <!-- Alert Success -->
     @if (session('success'))
-        <div style="background-color:#d1fae5; color:#065f46; padding:12px 18px; border-radius:8px; margin-bottom:20px; border:1px solid #a7f3d0;">
+        <div class="alert-success-custom">
+            <i class="fas fa-check-circle"></i>
             {{ session('success') }}
         </div>
     @endif
 
-    <!-- Tombol Tambah -->
-    <div style="text-align:right; margin-bottom:20px;">
-        <a href="{{ route('company-profile.create') }}" class="btn-add">
-            Tambah Company Profile
+    <div class="toolbar">
+        <p class="text-muted">Daftar informasi profil perusahaan yang ditampilkan di website.</p>
+        <a href="{{ route('company-profile.create') }}" class="btn-primary-custom">
+            <i class="fas fa-plus"></i> Tambah Profil
         </a>
     </div>
 
-    <!-- Tabel -->
-    <div style="box-shadow:0 2px 8px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
-        <table style="width:100%; border-collapse:collapse; background:#fff;">
-            <thead style="background:#1f2937; color:#fff;">
+    <div class="table-card">
+        <table class="modern-table">
+            <thead>
                 <tr>
-                    <th style="padding:12px 15px; width:5%;">No</th>
-                    <th style="padding:12px 15px;">Title</th>
-                    <th style="padding:12px 15px;">Description</th>
-                    <th style="padding:12px 15px; width:18%;">Aksi</th>
+                    <th>No</th>
+                    <th>Judul Informasi</th>
+                    <th>Cuplikan Deskripsi</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($profiles as $item)
-                <tr style="border-bottom:1px solid #e5e7eb;">
-                    <td style="padding:12px 15px;">{{ $loop->iteration }}</td>
-
-                    <td style="padding:12px 15px; font-weight:600; color:#111827;">
-                        {{ $item->title }}
-                    </td>
-
-                    <td style="padding:12px 15px;">
+                <tr>
+                    <td class="text-center" style="width: 50px;">{{ $loop->iteration }}</td>
+                    <td class="font-bold">{{ $item->title }}</td>
+                    <td>
                         @php
                             $plainDesc = strip_tags($item->description);
-                            $shortDesc = Str::limit($plainDesc, 80, '...');
+                            $shortDesc = Str::limit($plainDesc, 70, '...');
                         @endphp
+                        <span class="desc-preview" onclick="showModal('{{ $item->profile_id }}')">
+                            {{ $shortDesc }}
+                        </span>
 
-                        @if(strlen($plainDesc) > 80)
-                            <div style="max-width:320px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; color:#111827;"
-                                 onclick="showModal('{{ $item->profile_id }}')"
-                                 title="Klik untuk melihat selengkapnya">
-                                {{ $shortDesc }}
-                            </div>
-
-                            <!-- Modal -->
-                            <div id="modal-{{ $item->profile_id }}" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeModal('{{ $item->profile_id }}')">&times;</span>
-                                    <h3 style="margin-bottom:15px;">{{ $item->title }}</h3>
-                                    <div class="modal-body">
-                                        {!! $item->description !!}
-                                    </div>
+                        <div id="modal-{{ $item->profile_id }}" class="modal-custom">
+                            <div class="modal-content-custom">
+                                <div class="modal-header">
+                                    <h3>{{ $item->title }}</h3>
+                                    <span class="close-btn" onclick="closeModal('{{ $item->profile_id }}')">&times;</span>
+                                </div>
+                                <div class="modal-body-custom">
+                                    {!! $item->description !!}
                                 </div>
                             </div>
-                        @else
-                            {{ $plainDesc }}
-                        @endif
+                        </div>
                     </td>
-
-                    <td style="padding:12px 15px;">
-                        <a href="{{ route('company-profile.edit', $item->profile_id) }}" class="btn-edit">
-                            Edit
+                    <td class="action-buttons">
+                        <a href="{{ route('company-profile.edit', $item->profile_id) }}" class="btn-action edit" title="Edit">
+                            <i class="fas fa-edit"></i>
                         </a>
-
-                        <form action="{{ route('company-profile.destroy', $item->profile_id) }}"
-                              method="POST"
-                              style="display:inline;"
-                              onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-delete">
-                                Hapus
+                        <form action="{{ route('company-profile.destroy', $item->profile_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="btn-action delete" title="Hapus">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </form>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="4" style="text-align:center; padding:20px; color:#6b7280;">
-                        Data Company Profile belum tersedia
+                    <td colspan="4" class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>Belum ada data Company Profile.</p>
                     </td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-
 </div>
 
-<!-- Button Styles -->
+@push('styles')
 <style>
-.btn-add {
-    background-color:#2563eb;
-    color:#fff;
-    padding:10px 18px;
-    border-radius:8px;
-    font-weight:600;
-    text-decoration:none;
-    transition:0.3s;
-}
-.btn-add:hover {
-    background-color:#1d4ed8;
-}
+    .alert-success-custom {
+        background: #ecfdf5; border: 1px solid #10b981; color: #065f46;
+        padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;
+    }
+    .toolbar {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+    }
+    .btn-primary-custom {
+        background: var(--primary-accent); color: white; padding: 10px 20px; border-radius: 10px;
+        text-decoration: none; font-weight: 600; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary-custom:hover { opacity: 0.9; transform: translateY(-2px); }
 
-.btn-edit {
-    background-color:#f59e0b;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:6px;
-    text-decoration:none;
-    margin-right:6px;
-    transition:0.3s;
-}
-.btn-edit:hover {
-    background-color:#d97706;
-}
+    .table-card {
+        background: white; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden;
+    }
+    .modern-table { width: 100%; border-collapse: collapse; }
+    .modern-table th { background: #f8fafc; padding: 15px; text-align: left; font-size: 13px; color: #64748b; text-transform: uppercase; }
+    .modern-table td { padding: 15px; border-top: 1px solid #f1f5f9; font-size: 14px; }
+    .font-bold { font-weight: 600; color: #1e293b; }
+    
+    .desc-preview { color: #6366f1; cursor: pointer; border-bottom: 1px dashed #6366f1; }
+    
+    .action-buttons { display: flex; justify-content: center; gap: 8px; }
+    .btn-action { width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: none; transition: 0.3s; cursor: pointer; }
+    .btn-action.edit { background: #fef3c7; color: #d97706; }
+    .btn-action.delete { background: #fee2e2; color: #dc2626; }
+    .btn-action:hover { transform: scale(1.1); }
 
-.btn-delete {
-    background-color:#dc2626;
-    color:#fff;
-    padding:6px 12px;
-    border-radius:6px;
-    border:none;
-    cursor:pointer;
-    transition:0.3s;
-}
-.btn-delete:hover {
-    background-color:#b91c1c;
-}
+    .empty-state { text-align: center; padding: 50px !important; color: #94a3b8; }
+    .empty-state i { font-size: 40px; margin-bottom: 10px; }
+
+    /* Modal Styling */
+    .modal-custom { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+    .modal-content-custom { background:white; margin: 5% auto; padding: 0; border-radius: 15px; width: 90%; max-width: 700px; overflow: hidden; animation: zoomIn 0.3s; }
+    .modal-header { padding: 20px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+    .modal-body-custom { padding: 30px; max-height: 70vh; overflow-y: auto; line-height: 1.6; }
+    .close-btn { font-size: 24px; cursor: pointer; color: #94a3b8; }
+    @keyframes zoomIn { from {opacity: 0; transform: scale(0.9);} to {opacity: 1; transform: scale(1);} }
 </style>
+@endpush
 
-<!-- Modal Styles -->
-<style>
-.modal {
-    display:none;
-    position:fixed;
-    z-index:1000;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background-color:rgba(0,0,0,0.5);
-}
-.modal-content {
-    background-color:#fff;
-    margin:5% auto;
-    padding:20px;
-    border-radius:8px;
-    width:80%;
-    max-width:600px;
-    position:relative;
-    max-height:80vh;
-    overflow-y:auto;
-}
-.close {
-    position:absolute;
-    right:15px;
-    top:10px;
-    font-size:28px;
-    cursor:pointer;
-    color:#9ca3af;
-}
-.close:hover {
-    color:#111827;
-}
-</style>
-
-<!-- Modal Script -->
+@push('scripts')
 <script>
-function showModal(id) {
-    document.getElementById('modal-' + id).style.display = 'block';
-}
-function closeModal(id) {
-    document.getElementById('modal-' + id).style.display = 'none';
-}
-window.onclick = function(event) {
-    document.querySelectorAll('.modal').forEach(modal => {
-        if (event.target === modal) modal.style.display = 'none';
-    });
-}
+    function showModal(id) { document.getElementById('modal-' + id).style.display = 'block'; }
+    function closeModal(id) { document.getElementById('modal-' + id).style.display = 'none'; }
+    window.onclick = function(e) { 
+        if (e.target.className === 'modal-custom') {
+            document.querySelectorAll('.modal-custom').forEach(m => m.style.display = 'none');
+        }
+    }
 </script>
+@endpush
 @endsection

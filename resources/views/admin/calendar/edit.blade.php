@@ -4,41 +4,96 @@
 @section('page-title', 'Edit Content Calendar')
 
 @section('content')
-<div class="card" style="max-width:800px; margin:50px auto; padding:40px; border-radius:20px; box-shadow:0 15px 45px rgba(0,0,0,0.1); background:#fefefe; border-top:6px solid #2563eb;">
-    <h2 class="card-title" style="text-align:center; font-size:28px; color:#2563eb; margin-bottom:30px;">Edit Content Calendar</h2>
-
-    @if ($errors->any())
-        <div class="errors" style="background:#fdecea; border:1px solid #f5c6cb; color:#d32f2f; padding:15px 20px; border-radius:12px; margin-bottom:20px;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('calendar.update', $calendar->calendar_id) }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="form-group" style="margin-bottom:20px;">
-            <label style="font-weight:600; margin-bottom:6px; display:block; color:#2563eb;">Title</label>
-            <input type="text" name="title" value="{{ old('title', $calendar->title) }}" required placeholder="Masukkan title" style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid #d6d9d2; background:#f9faff; font-size:15px;">
+<div class="calendar-wrapper">
+    <div class="calendar-card edit-border">
+        <div class="calendar-header">
+            <div class="circle-icon edit-icon"><i class="fas fa-edit"></i></div>
+            <div>
+                <h3>Edit Jadwal Konten</h3>
+                <p>Perbarui rencana konten: <strong>{{ $calendar->title }}</strong></p>
+            </div>
         </div>
 
-        <div class="form-group" style="margin-bottom:20px;">
-            <label style="font-weight:600; margin-bottom:6px; display:block; color:#2563eb;">Note</label>
-            <textarea name="note" placeholder="Masukkan note" style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid #d6d9d2; background:#f9faff; font-size:15px;" rows="5">{{ old('note', $calendar->note) }}</textarea>
-        </div>
+        @if ($errors->any())
+            <div class="alert-errors">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li><i class="fas fa-exclamation-circle"></i> {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <div class="form-group" style="margin-bottom:20px;">
-            <label style="font-weight:600; margin-bottom:6px; display:block; color:#2563eb;">Scheduled Date</label>
-            <input type="date" name="scheduled_date" value="{{ old('scheduled_date', $calendar->scheduled_date) }}" required style="width:100%; padding:12px 16px; border-radius:10px; border:1px solid #d6d9d2; background:#f9faff; font-size:15px;">
-        </div>
+        <form action="{{ route('calendar.update', $calendar->calendar_id) }}" method="POST" id="editCalendarForm">
+            @csrf
+            @method('PUT')
+            
+            <div class="form-group">
+                <label for="title">Judul Konten</label>
+                <input type="text" id="title" name="title" value="{{ old('title', $calendar->title) }}" required>
+            </div>
 
-        <div class="form-actions" style="text-align:center; margin-top:30px;">
-            <button type="submit" style="background: linear-gradient(135deg, #2563eb, #4f46e5); color:#fff; padding:14px 35px; font-size:16px; border:none; border-radius:12px; cursor:pointer;">Update</button>
-        </div>
-    </form>
+            <div class="form-group">
+                <label for="scheduled_date">Tanggal Penjadwalan</label>
+                <input type="date" id="scheduled_date" name="scheduled_date" value="{{ old('scheduled_date', $calendar->scheduled_date) }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Catatan Detail (Note)</label>
+                <div class="quill-container">
+                    <div id="editor-note">{!! old('note', $calendar->note) !!}</div>
+                </div>
+                <input type="hidden" name="note" id="note_hidden">
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ route('calendar.index') }}" class="btn-cancel">Batal</a>
+                <button type="submit" class="btn-update">
+                    <i class="fas fa-sync-alt"></i> Update Jadwal
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
+
+@push('styles')
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+    :root { --edit-indigo: #4f46e5; --border: #e2e8f0; --bg-edit: #f5f7ff; }
+    .calendar-wrapper { max-width: 850px; margin: 40px auto; padding: 0 20px; font-family: 'Inter', sans-serif; }
+    .calendar-card { background: #fff; border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
+    .edit-border { border-top: 6px solid var(--edit-indigo); }
+    .calendar-header { display: flex; align-items: center; gap: 20px; margin-bottom: 35px; }
+    .circle-icon { width: 55px; height: 55px; color: white; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .edit-icon { background: var(--edit-indigo); }
+    .form-group { margin-bottom: 25px; }
+    .form-group label { display: block; margin-bottom: 10px; font-weight: 600; color: #475569; }
+    .form-group input { width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg-edit); transition: 0.3s; }
+    .quill-container { border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); background: white; }
+    .ql-editor { min-height: 200px; font-size: 15px; }
+    .form-actions { margin-top: 40px; padding-top: 30px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 15px; }
+    .btn-update { background: linear-gradient(135deg, #4f46e5, #3730a3); color: white; border: none; padding: 12px 35px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+    .alert-errors { background: #fff1f2; border: 1px solid #fecaca; color: #be123c; padding: 15px; border-radius: 12px; margin-bottom: 25px; }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+    var quill = new Quill('#editor-note', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
+    });
+
+    document.getElementById('editCalendarForm').onsubmit = function() {
+        document.getElementById('note_hidden').value = quill.root.innerHTML;
+    };
+</script>
+@endpush

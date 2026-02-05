@@ -1,211 +1,100 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tambah Company Profile')
+@section('title', 'Tambah Profil')
 @section('page-title', 'Tambah Company Profile')
 
 @section('content')
-<div class="card">
-    <h2 class="card-title">Tambah Company Profile</h2>
-
-    {{-- ERROR VALIDATION --}}
-    @if ($errors->any())
-        <div class="errors">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('company-profile.store') }}">
-        @csrf
-
-        <div class="form-group">
-            <label for="title">Judul</label>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                value="{{ old('title') }}"
-                required
-                placeholder="Masukkan judul company profile">
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <i class="fas fa-plus-circle"></i>
+            <div>
+                <h4>Buat Informasi Baru</h4>
+                <p>Silakan isi formulir di bawah untuk menambah informasi profil perusahaan.</p>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Deskripsi</label>
-            <div id="editor">{!! old('description') !!}</div>
-            <input type="hidden" name="description" id="description_hidden">
-        </div>
+        <form method="POST" action="{{ route('company-profile.store') }}">
+            @csrf
 
-        <div class="form-actions">
-            <button type="submit">Simpan Company Profile</button>
-        </div>
-    </form>
+            <div class="form-group-custom">
+                <label for="title"><i class="fas fa-heading"></i> Judul Informasi</label>
+                <input type="text" id="title" name="title" value="{{ old('title') }}" 
+                       required placeholder="Contoh: Visi dan Misi Perusahaan">
+                @error('title') <span class="error-msg">{{ $message }}</span> @enderror
+            </div>
 
-    <div class="back-link">
-        <a href="{{ route('company-profile.index') }}">⬅ Kembali ke Company Profile</a>
+            <div class="form-group-custom">
+                <label><i class="fas fa-align-left"></i> Deskripsi Lengkap</label>
+                <div id="editor-container">{!! old('description') !!}</div>
+                <input type="hidden" name="description" id="description_hidden">
+                @error('description') <span class="error-msg">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="form-footer">
+                <a href="{{ route('company-profile.index') }}" class="btn-cancel">Batal</a>
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-paper-plane"></i> Simpan Company Profile
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-@endsection
 
-{{-- ================== STYLES ================== --}}
 @push('styles')
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-
 <style>
-:root {
-    --primary: #2563eb;
-    --primary-gradient: linear-gradient(135deg, #2563eb, #4f46e5);
-    --border: #e5e7eb;
-    --shadow: rgba(0,0,0,0.12);
-    --error: #dc2626;
-}
+    .form-container { max-width: 900px; margin: 0 auto; animation: fadeInUp 0.4s ease; }
+    .form-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
+    
+    .form-header { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; padding-bottom: 20px; border-bottom: 1px solid #f8fafc; }
+    .form-header i { font-size: 2.5rem; color: var(--primary-accent); }
+    .form-header h4 { font-size: 1.25rem; color: #1e293b; margin: 0; }
+    .form-header p { color: #94a3b8; font-size: 0.9rem; margin: 0; }
 
-/* CARD */
-.card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 45px 40px;
-    max-width: 900px;
-    margin: 40px auto;
-    box-shadow: 0 15px 40px var(--shadow);
-    border-top: 6px solid var(--primary);
-    animation: fadeUp .7s ease;
-}
-
-.card-title {
-    text-align: center;
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 35px;
-}
-
-/* ANIMATION */
-@keyframes fadeUp {
-    from { opacity:0; transform: translateY(25px); }
-    to { opacity:1; transform: translateY(0); }
-}
-
-/* ERROR */
-.errors {
-    background: #fdecea;
-    border: 1px solid #f5c6cb;
-    color: var(--error);
-    padding: 16px 20px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-}
-.errors li {
-    margin-bottom: 6px;
-}
-
-/* FORM */
-.form-group {
-    margin-bottom: 28px;
-}
-.form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--primary);
-    font-size: 15px;
-}
-.form-group input {
-    width: 100%;
-    padding: 14px 18px;
-    font-size: 15px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: #f9fafb;
-    transition: .3s;
-}
-.form-group input:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 15px rgba(99,102,241,.25);
-    outline: none;
-}
-
-/* QUILL */
-#editor {
-    height: 380px;
-    background: #ffffff;
-    border: 2px solid #6366f1;
-    border-radius: 12px;
-}
-
-/* BUTTON */
-.form-actions {
-    text-align: center;
-    margin-top: 35px;
-}
-.form-actions button {
-    background: var(--primary-gradient);
-    color: #ffffff;
-    padding: 15px 42px;
-    font-size: 16px;
-    font-weight: 700;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: .3s;
-    box-shadow: 0 5px 22px rgba(37,99,235,.35);
-}
-.form-actions button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 28px rgba(37,99,235,.45);
-}
-
-/* BACK LINK */
-.back-link {
-    text-align: center;
-    margin-top: 25px;
-}
-.back-link a {
-    color: #6366f1;
-    font-weight: 600;
-    text-decoration: none;
-}
-.back-link a:hover {
-    text-decoration: underline;
-}
-
-/* RESPONSIVE */
-@media (max-width:768px) {
-    .card {
-        padding: 30px 25px;
-        margin: 25px;
+    .form-group-custom { margin-bottom: 25px; }
+    .form-group-custom label { display: block; margin-bottom: 10px; font-weight: 600; color: #1e293b; font-size: 0.95rem; }
+    .form-group-custom input { 
+        width: 100%; padding: 14px 18px; border-radius: 12px; border: 1px solid #e2e8f0; 
+        font-size: 1rem; transition: 0.3s; background: #f8fafc;
     }
-}
+    .form-group-custom input:focus { outline: none; border-color: var(--primary-accent); background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+    
+    #editor-container { height: 350px; border-radius: 0 0 12px 12px; font-size: 1rem; }
+    .ql-toolbar { border-radius: 12px 12px 0 0; background: #f8fafc; border-color: #e2e8f0; }
+    .ql-container { border-color: #e2e8f0; }
+    
+    .form-footer { display: flex; justify-content: flex-end; gap: 15px; margin-top: 35px; padding-top: 25px; border-top: 1px solid #f1f5f9; }
+    .btn-cancel { text-decoration: none; color: #64748b; padding: 12px 25px; font-weight: 600; border-radius: 10px; transition: 0.3s; }
+    .btn-cancel:hover { background: #f1f5f9; }
+    .btn-save { background: var(--primary-accent); color: white; border: none; padding: 12px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); }
+    .btn-save:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3); }
+    .error-msg { color: #dc2626; font-size: 0.85rem; margin-top: 8px; display: block; font-weight: 500; }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 @endpush
 
-{{-- ================== SCRIPTS ================== --}}
 @push('scripts')
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-
 <script>
-const toolbarOptions = [
-    [{ 'header': [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'align': [] }],
-    ['link', 'image'],
-    ['clean']
-];
+    var quill = new Quill('#editor-container', {
+        theme: 'snow',
+        placeholder: 'Tuliskan deskripsi profil di sini...',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image', 'clean']
+            ]
+        }
+    });
 
-const quill = new Quill('#editor', {
-    theme: 'snow',
-    placeholder: 'Tulis deskripsi company profile di sini...',
-    modules: {
-        toolbar: toolbarOptions
-    }
-});
-
-document.querySelector('form').addEventListener('submit', function () {
-    document.getElementById('description_hidden').value = quill.root.innerHTML;
-});
+    document.querySelector('form').onsubmit = function() {
+        document.getElementById('description_hidden').value = quill.root.innerHTML;
+    };
 </script>
 @endpush
+@endsection
